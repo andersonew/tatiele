@@ -1,15 +1,18 @@
-const api = require("./api");
-const express = require("express");
-const cors = require("cors")
+const express = require('express')
+let app = express();
 
-let server = express();
+app.use(express.static("."));
 
-server.use(express.json());
-server.use(cors());
+app.get("/", (req,res)=>{
+    res.sendFile(__dirname + '/index.html')
+})
 
-server.listen(8080);
+app.listen("8080", ()=>{
+    console.log("testando a porta 8080")
+})
 
-server.get('/pokemon/:id' , async (req, res) => {
+
+app.get('/pokemon/:id' , async (req, res) => {
     const { id } = req.params;
     try {
         const { data } = await api.get(`pokemon/${id}`);
@@ -21,19 +24,27 @@ server.get('/pokemon/:id' , async (req, res) => {
     }
 } );
 
-async function pokemon() { 
+async function pokemon(){ 
     const id = document.getElementById("id").value
     const config = {
-        method: "get", 
-        headers: {'Access-Control-Allow-Origin': '*'},
-        url: `http://localhost:3000/pokemon/${id}`
+      method: "get", 
+      headers: {'Access-Control-Allow-Origin': '*'},
+      url: `http://localhost:3000/pokemon/${id}`
     }
     const { data } = await axios(config)
     const texto =`<p> Nome do Pokemon: ${data.name} </p>`
 
     if(data){
-        document.getElementById("nome").innerHTML = texto
+      document.getElementById("nome").innerHTML = texto //sobre escreve//
+      //.insertAdjacentHTML('afterend',texto)('afterend',texto)- mantém//
     }
+    
 }
 
+const axios = require("axios");
 
+const api = axios.create({
+    baseURL: 'https://pokeapi.co/api/v2/'
+});
+
+module.exports = api;
