@@ -21,3 +21,19 @@ server.get('/pokemon/:id' , async (req, res) => {
     }
 } );
 
+async function pokemon() { 
+    const id = document.getElementById("id").value
+    const config = {
+        method: "get", 
+        headers: {'Access-Control-Allow-Origin': '*'},
+        url: `http://localhost:3000/pokemon/${id}`
+    }
+    const { data } = await axios(config)
+    const texto =`<p> Nome do Pokemon: ${data.name} </p>`
+
+    if(data){
+        document.getElementById("nome").innerHTML = texto
+    }
+}
+
+
