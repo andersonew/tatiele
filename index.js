@@ -11,40 +11,52 @@ app.listen("8080", ()=>{
     console.log("testando a porta 8080")
 })
 
+function doNothing() {
+    var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+    if (keyCode == 13) {
 
-app.get('/pokemon/:id' , async (req, res) => {
-    const { id } = req.params;
-    try {
-        const { data } = await api.get(`pokemon/${id}`);
 
-      return res.send({ name: data.name });
-    } catch (error) {
-        res.send({ error: error.message });
+        if (!e) var e = window.event;
 
+        e.cancelBubble = true;
+        e.returnValue = false;
+
+        if (e.stopPropagation) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
     }
-} );
-
-async function pokemon(){ 
-    const id = document.getElementById("id").value
-    const config = {
-      method: "get", 
-      headers: {'Access-Control-Allow-Origin': '*'},
-      url: `http://localhost:3000/pokemon/${id}`
-    }
-    const { data } = await axios(config)
-    const texto =`<p> Nome do Pokemon: ${data.name} </p>`
-
-    if(data){
-      document.getElementById("nome").innerHTML = texto //sobre escreve//
-      //.insertAdjacentHTML('afterend',texto)('afterend',texto)- mantém//
-    }
-    
 }
 
-const axios = require("axios");
+async function loadRepositories(name) {
+    var script = 'https://pokeapi.co/api/v2/pokemon/pikachu'+name;
 
-const api = axios.create({
-    baseURL: 'https://pokeapi.co/api/v2/'
-});
+    const response = await fetch(script);
 
-module.exports = api;
+    const repositories = await response.json();
+
+    return repositories;
+
+}
+
+async function createList(name) {
+
+    let repositoriesList = await loadRepositories(name);
+
+    repositoriesList.map(repository => {
+
+        let item = document.createElement('li');
+
+        list.appendChild(item);
+
+        item.insertAdjacentHTML('afterbegin', `<strong>Nome: ${repository.forms.0.name}</strong>`);
+        item.insertAdjacentHTML('beforeend', `PESO: ${repository.game_indices.height}`);
+        item.insertAdjacentHTML('beforeend', `HP: ${repository.stats.0.base_stat}`);
+        item.insertAdjacentHTML('beforeend', `ATAQUE: ${repository.stats.1.base_stat}`);
+        item.insertAdjacentHTML('beforeend', `DEFESA: ${repository.stats.2.base_stat}`);
+        item.insertAdjacentHTML('beforeend', `ATAQUE ESPECIAL: ${repository.stats.3.base_stat}`);
+        item.insertAdjacentHTML('beforeend', `DEFESA ESPECIAL: ${repository.stats.4.base_stat}`);
+        item.insertAdjacentHTML('beforeend', `VELOCIDADE: ${repository.stats.5.base_stat}`);
+        item.insertAdjacentHTML('beforeend', `<img src="${repository.sprites.other.home.front_default}">`);
+    })
+}
